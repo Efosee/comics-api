@@ -5,6 +5,7 @@ class MarvelService {
 		this.publicKey = publicKey;
 		this.privateKey = privateKey;
 	}
+	_baseUrl = "https://gateway.marvel.com/v1/public/";
 	createAPIUrl() {
 		const ts = Date.now();
 		const hash = md5(ts + this.privateKey + this.publicKey);
@@ -29,11 +30,11 @@ class MarvelService {
 	getAllCharacters = (limit, offset) => {
 		limit = limit ? `limit=${limit}&` : ""; 
 		offset = offset ? `offset=${offset}&` : ""; 
-		const url = `https://gateway.marvel.com/v1/public/comics?${limit}${offset}` + this.createAPIUrl()
+		const url = this._baseUrl + `comics?${limit}${offset}` + this.createAPIUrl()
 		return this.getResources(url);
 	}
 	getCharacter = (id) => {
-		const url = `https://gateway.marvel.com/v1/public/comics/${id}?` + this.createAPIUrl()
+		const url = this._baseUrl + `comics/${id}?` + this.createAPIUrl()
 		return this.getResources(url);
 	}
 
