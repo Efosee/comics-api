@@ -1,16 +1,41 @@
 import md5 from "md5";
 
-class MarvelService{
-	constructor(publicKey, privateKey){
+class MarvelService {
+	constructor(publicKey, privateKey) {
 		this.publicKey = publicKey;
 		this.privateKey = privateKey;
 	}
-	createMd5() {
-		const ts = 1 //Date.now();
+	createAPIUrl() {
+		const ts = Date.now();
 		const hash = md5(ts + this.privateKey + this.publicKey);
-		const apiUrl = `https://gateway.marvel.com/v1/public/comics?ts=${ts}&apikey=${this.publicKey}&hash=${hash}`
-		console.log(apiUrl)
+		return `ts=${ts}&apikey=${this.publicKey}&hash=${hash}`;
 	}
-	
+	getResources = async (url) => {
+		try {
+			const res = await fetch(url);
+
+			if (!res.ok) {
+				throw new Error(`Could ${res.status}`);
+			}
+
+			return await res.json();
+
+		} catch (error){
+			console.error(error);
+		}
+
+	}
+
+	getAllCharacters = (limit, offset) => {
+		limit = limit ? `limit=${limit}&` : ""; 
+		offset = offset ? `offset=${offset}&` : ""; 
+		const url = `https://gateway.marvel.com/v1/public/comics?${limit}${offset}` + this.createAPIUrl()
+		return this.getResources(url);
+	}
+	getCharacter = (id) => {
+		const url = `https://gateway.marvel.com/v1/public/comics/${id}?` + this.createAPIUrl()
+		return this.getResources(url);
+	}
+
 }
 export default MarvelService
