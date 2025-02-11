@@ -27,15 +27,27 @@ class MarvelService {
 
 	}
 
-	getAllCharacters = (limit, offset) => {
+	getApiAllResources = (limit, offset, res="characters") => {
+
 		limit = limit ? `limit=${limit}&` : ""; 
 		offset = offset ? `offset=${offset}&` : ""; 
-		const url = this._baseUrl + `comics?${limit}${offset}` + this.createAPIUrl()
+
+		const url = this._baseUrl + `${res}?${limit}${offset}` + this.createAPIUrl()
 		return this.getResources(url);
 	}
-	getCharacter = (id) => {
-		const url = this._baseUrl + `comics/${id}?` + this.createAPIUrl()
+
+	getApiResource = (id, res="characters") => {
+		const url = this._baseUrl + `${res}/${id}?` + this.createAPIUrl()
 		return this.getResources(url);
+	}
+
+	getAllCharacters = (limit, offset) => {
+		const resources="characters";
+		return this.getApiAllResources(limit, offset, resources);
+	}
+	getCharacter = (id) => {
+		const resource = "characters";
+		return this.getApiResource(id, resource);
 	}
 
 }
