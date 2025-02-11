@@ -21,33 +21,48 @@ class MarvelService {
 
 			return await res.json();
 
-		} catch (error){
+		} catch (error) {
 			console.error(error);
 		}
 
 	}
 
-	getApiAllResources = (limit, offset, res="characters") => {
+	getApiAllResources = (limit, offset, res = "characters") => {
 
-		limit = limit ? `limit=${limit}&` : ""; 
-		offset = offset ? `offset=${offset}&` : ""; 
+		limit = limit ? `limit=${limit}&` : "";
+		offset = offset ? `offset=${offset}&` : "";
 
 		const url = this._baseUrl + `${res}?${limit}${offset}` + this.createAPIUrl()
 		return this.getResources(url);
 	}
 
-	getApiResource = (id, res="characters") => {
+	getApiResource = (id, res = "characters") => {
 		const url = this._baseUrl + `${res}/${id}?` + this.createAPIUrl()
 		return this.getResources(url);
 	}
 
 	getAllCharacters = (limit, offset) => {
-		const resources="characters";
-		return this.getApiAllResources(limit, offset, resources);
+		const apiResource = "characters";
+		const res = this.getApiAllResources(limit, offset, apiResource);
+		return res.data.results.map(this._transformCharacter);
 	}
-	getCharacter = (id) => {
-		const resource = "characters";
-		return this.getApiResource(id, resource);
+	getCharacter = async (id) => {
+		const apiResource = "characters";
+		const res = await this.getApiResource(id, apiResource);
+
+		return this._transformCharacter(res.data.results[0]);
+
+	}
+
+	_transformCharacter = (char) => {
+		const {name, description, thumbnail, urls} = char;
+		return {
+			name: name,
+			description: description ? `${description.slice(0,210)}...`: "There is no description for this character",
+			thumbnail: thumbnail.path + '.' + thumbnail.extension,
+			homepage: urls[0].url,
+			wiki: urls[1].url
+		}
 	}
 
 }

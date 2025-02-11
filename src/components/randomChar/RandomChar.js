@@ -1,46 +1,39 @@
 import { Component } from 'react';
 import './randomChar.scss';
-//import thor from '../../resources/img/thor.jpeg';
 import mjolnir from '../../resources/img/mjolnir.png';
 import MarvelService from '../../services/MarvelService';
-
-
 
 class RandomChar extends Component {
 	constructor(props) {
 		super(props);
-		// this.updateChar();
-		this.updateChar()
+		this.updateChar();
 	}
 	state = {
-		name: null,
-		description: null,
-		thumbnail: null,
-		homepage: null,
-		wiki: null
+		char:{}
 	}
 
 	marvelService = new MarvelService("ca6ebcdf506dab97c2c0256b367848c4", "f0655c29263c9aa0b053af7c9598228819172c1b");
 
+	onCharLoaded = (char) => {
+		this.setState({char: char});
+	}
 	updateChar = () => {
-		const id = 1011310
+		const max = 1011400,
+					min = 1011000;
+		const id = Math.floor(Math.random() * (max - min + 1) + min)
 		this.marvelService
 			.getCharacter(id)
 			.then(res => {
+				// console.log(res);
 				if (res) {
-					this.setState({
-						name: res.data.results[0].name,
-						description: res.data.results[0].description,
-						thumbnail: res.data.results[0].thumbnail.path + '.' + res.data.results[0].thumbnail.extension,
-						homepage: res.data.results[0].urls[0].url,
-						wiki: res.data.results[0].urls[1].url
-					});
+					//this.setState({char: res});
 					// setTimeout(() => console.log(this.state), 0);
+					this.onCharLoaded(res)
 				}
 			});
 	}
 	render() {
-		const { name, description, thumbnail, homepage, wiki } = this.state;
+		const { char: {name, description, thumbnail, homepage, wiki} } = this.state;
 		return (
 			<div className="randomchar">
 				<div className="randomchar__block">
