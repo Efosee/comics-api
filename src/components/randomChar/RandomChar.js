@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import './randomChar.scss';
+import Spinner from "../spinner/Spinner";
 import mjolnir from '../../resources/img/mjolnir.png';
 import MarvelService from '../../services/MarvelService';
 
@@ -9,7 +10,8 @@ class RandomChar extends Component {
 		this.updateChar();
 	}
 	state = {
-		char:{}
+		char:{},
+		loading: true
 	}
 
 	marvelService = new MarvelService("ca6ebcdf506dab97c2c0256b367848c4", "f0655c29263c9aa0b053af7c9598228819172c1b");
@@ -33,7 +35,11 @@ class RandomChar extends Component {
 			});
 	}
 	render() {
-		const { char: {name, description, thumbnail, homepage, wiki} } = this.state;
+		const { char: {name, description, thumbnail, homepage, wiki}, loading } = this.state;
+
+		if (loading){
+			return <Spinner/>
+		}
 		return (
 			<div className="randomchar">
 				<div className="randomchar__block">
