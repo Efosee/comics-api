@@ -1,17 +1,18 @@
 import { Component } from 'react';
 import './randomChar.scss';
 import Spinner from "../spinner/Spinner";
+import ErrorMessage from '../errorMessage/ErrorMessage';
 import mjolnir from '../../resources/img/mjolnir.png';
 import MarvelService from '../../services/MarvelService';
 
 class RandomChar extends Component {
-	constructor(props) {
-		super(props);
+	componentDidMount(){
 		this.updateChar();
 	}
 	state = {
 		char: {},
-		loading: true
+		loading: true,
+		error: false
 	}
 
 	marvelService = new MarvelService("ca6ebcdf506dab97c2c0256b367848c4", "f0655c29263c9aa0b053af7c9598228819172c1b");
@@ -19,26 +20,33 @@ class RandomChar extends Component {
 	onCharLoaded = (char) => {
 		this.setState({ char: char, loading: false });
 	}
+
+	onError = () => {
+		this.setState({
+			loading: false,
+			error: true
+		})
+
+	}
 	updateChar = () => {
 		const max = 1011400,
 			min = 1011000;
 		const id = Math.floor(Math.random() * (max - min + 1) + min)
 		this.marvelService
 			.getCharacter(id)
-			.then(res => {
-				// console.log(res);
-				if (res) {
-					//this.setState({char: res});
-					// setTimeout(() => console.log(this.state), 0);
-					this.onCharLoaded(res)
-				}
-			});
+			.then(this.onCharLoaded)
+			.catch(this.onError)
+			
 	}
 	render() {
-		const { char, loading } = this.state;
+		const { char, loading, error } = this.state;
+		const errorMessage = error ? <ErrorMessage/> : null;
+		const spinner = loading ? <Spinner/> : null;
+		const content = !(loading || error) ? <View char={char}/> : null
 		return (
 			<div className="randomchar">
-				{loading ? <Spinner /> : <View char={char} />}
+				{/* {loading ? <Spinner /> : error ? <ErrorMessage/> : <View char={char} />} */}
+				{[errorMessage, spinner, content]}
 				<div className="randomchar__static">
 					<p className="randomchar__title">
 						Random character for today!<br />

@@ -16,13 +16,14 @@ class MarvelService {
 			const res = await fetch(url);
 
 			if (!res.ok) {
-				throw new Error(`Could ${res.status}`);
+				throw new Error(`Could not fetch ${url}, status: ${res.status}`);
 			}
 
 			return await res.json();
 
 		} catch (error) {
 			console.error(error);
+			
 		}
 
 	}
@@ -49,7 +50,6 @@ class MarvelService {
 	getCharacter = async (id) => {
 		const apiResource = "characters";
 		const res = await this.getApiResource(id, apiResource);
-
 		return this._transformCharacter(res.data.results[0]);
 
 	}
