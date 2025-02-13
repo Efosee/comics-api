@@ -38,6 +38,11 @@ class RandomChar extends Component {
 			.catch(this.onError)
 			
 	}
+	
+	onUpdateChar = () => {
+		this.setState({loading: true, error: false});
+		this.updateChar();
+	}
 	render() {
 		const { char, loading, error } = this.state;
 		const errorMessage = error ? <ErrorMessage/> : null;
@@ -46,7 +51,9 @@ class RandomChar extends Component {
 		return (
 			<div className="randomchar">
 				{/* {loading ? <Spinner /> : error ? <ErrorMessage/> : <View char={char} />} */}
-				{[errorMessage, spinner, content]}
+				{errorMessage}
+				{spinner}
+				{content}
 				<div className="randomchar__static">
 					<p className="randomchar__title">
 						Random character for today!<br />
@@ -55,7 +62,7 @@ class RandomChar extends Component {
 					<p className="randomchar__title">
 						Or choose another one
 					</p>
-					<button className="button button__main">
+					<button onClick={this.onUpdateChar} className="button button__main">
 						<div className="inner">try it</div>
 					</button>
 					<img src={mjolnir} alt="mjolnir" className="randomchar__decoration" />
@@ -67,10 +74,21 @@ class RandomChar extends Component {
 
 const View = ({ char }) => {
 	const { name, description, thumbnail, homepage, wiki } = char;
+	
+
+	const checkImage = (thumbnail) => {
+		console.log(thumbnail)
+		if (thumbnail.includes("image_not_available")){
+			return (<img src={thumbnail} alt="Random character" className="randomchar__img" 
+			style={{objectFit: "contain"}}/>);
+		} else {
+			return <img src={thumbnail} alt="Random character" className="randomchar__img"/>
+		}
+	}
 
 	return (
 		<div className="randomchar__block">
-			<img src={thumbnail} alt="Random character" className="randomchar__img" />
+			{checkImage(thumbnail)}
 			<div className="randomchar__info">
 				<p className="randomchar__name">{name}</p>
 				<p className="randomchar__descr">
