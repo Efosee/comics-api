@@ -42,9 +42,9 @@ class MarvelService {
 		return this.getResources(url);
 	}
 
-	getAllCharacters = (limit, offset) => {
+	getAllCharacters = async (limit, offset) => {
 		const apiResource = "characters";
-		const res = this.getApiAllResources(limit, offset, apiResource);
+		const res = await this.getApiAllResources(limit, offset, apiResource);
 		return res.data.results.map(this._transformCharacter);
 	}
 	getCharacter = async (id) => {

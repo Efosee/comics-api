@@ -77,7 +77,6 @@ const View = ({ char }) => {
 	
 
 	const checkImage = (thumbnail) => {
-		console.log(thumbnail)
 		if (thumbnail.includes("image_not_available")){
 			return (<img src={thumbnail} alt="Random character" className="randomchar__img" 
 			style={{objectFit: "contain"}}/>);
