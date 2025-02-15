@@ -1,5 +1,4 @@
 import './charList.scss';
-import abyss from '../../resources/img/abyss.jpg';
 
 import { Component } from 'react';
 import MarvelService from '../../services/MarvelService';
@@ -9,26 +8,41 @@ import ErrorMessage from '../errorMessage/ErrorMessage';
 class CharList extends Component {
 
 	marvelService = new MarvelService("ca6ebcdf506dab97c2c0256b367848c4", "f0655c29263c9aa0b053af7c9598228819172c1b");
-	
+
 	state = {
 		listOfChars: [],
 		error: false,
 		loading: true
 	}
-	componentDidMount(){
-		this.char()
+	componentDidMount() {
+		this.marvelService.getAllCharacters(9)
+			.then(this.onCharListLoaded)
+			.catch(this.onError)
+	}
+	onCharListLoaded = (listOfChars) => {
+		this.setState({
+			listOfChars: listOfChars,
+			loading: false,
+			error: false
+		})
+	}
+	onError = () => {
+		this.setState({
+			error: true,
+			loading: false
+		})
 	}
 	checkImage = (thumbnail, name) => {
-		if (thumbnail.includes("image_not_available")){
-			return (<img src={thumbnail} alt={name} className="randomchar__img" 
-			style={{objectFit: "contain"}}/>);
+		if (thumbnail.includes("image_not_available")) {
+			return (<img src={thumbnail} alt={name} className="randomchar__img"
+				style={{ objectFit: "contain" }} />);
 		} else {
-			return <img src={thumbnail} alt={name} className="randomchar__img"/>
+			return <img src={thumbnail} alt={name} className="randomchar__img" />
 		}
 	}
 
-	formerList = (listOfChars) => {
-		return listOfChars.map(({thumbnail, name}) => {
+	renderList = (listOfChars) => {
+		const items = listOfChars.map(({ thumbnail, name }) => {
 			const img = this.checkImage(thumbnail, name);
 			return (
 				<li key={name} className="char__item">
@@ -38,20 +52,26 @@ class CharList extends Component {
 				</li>
 			);
 		});
-	}
 
-	char = () => {
-		this.marvelService.getAllCharacters(9)
-				.then((listOfChars) => this.setState({listOfChars}))
+		return (
+			<ul className="char__grid">
+				{items}
+			</ul>
+		);
 	}
 
 	render() {
-		const list = this.formerList(this.state.listOfChars);
+		const { listOfChars, error, loading } = this.state
+		const list = this.renderList(listOfChars);
+		const errorMessage = error ? <ErrorMessage /> : null;
+		const spinner = loading ? <Spinner /> : null;
+		const items = !(loading || error) ? list : null;
 		return (
 			<div className="char__list">
-				<ul className="char__grid">
-					{list}
-					{/* <li className="char__item">
+				{errorMessage}
+				{spinner}
+				{items}
+				{/* <li className="char__item">
 						<img src={abyss} alt="abyss" />
 						<div className="char__name">Abyss</div>
 					</li>
@@ -87,7 +107,7 @@ class CharList extends Component {
 						<img src={abyss} alt="abyss" />
 						<div className="char__name">Abyss</div>
 					</li> */}
-				</ul>
+
 				<button className="button button__main button__long">
 					<div className="inner">load more</div>
 				</button>
