@@ -42,10 +42,12 @@ class CharList extends Component {
 	}
 
 	renderList = (listOfChars) => {
-		const items = listOfChars.map(({ thumbnail, name }) => {
+		const items = listOfChars.map(({ thumbnail, name, id }) => {
 			const img = this.checkImage(thumbnail, name);
 			return (
-				<li key={name} className="char__item">
+				<li key={id} 
+				className="char__item"
+				onClick={() => this.props.onCharSelected(id)}>
 					{/* <img src={thumbnail} alt={name} /> */}
 					{img}
 					<div className="char__name">{name}</div>
