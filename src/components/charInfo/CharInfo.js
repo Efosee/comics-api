@@ -1,16 +1,12 @@
 import { Component } from 'react';
 import './charInfo.scss';
-import thor from '../../resources/img/thor.jpeg';
 import MarvelService from '../../services/MarvelService';
 
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
-import Skeleton from '../skeleton/Skeleton'
-import { computeHeadingLevel } from '@testing-library/react';
-
+import Skeleton from '../skeleton/Skeleton';
 
 class CharInfo extends Component {
-
 	state = {
 		char: null,
 		loading: false,

@@ -12,19 +12,39 @@ class CharList extends Component {
 	state = {
 		listOfChars: [],
 		error: false,
-		loading: true
+		loading: true,
+		newItemLoading: false,
+		offset: 1500,
+		charEnded: false
 	}
 	componentDidMount() {
-		this.marvelService.getAllCharacters(9)
+		this.onRequest();
+	}
+
+	onCharListLoading = () => {
+		this.setState({
+			newItemLoading: true
+		})
+	}
+	onRequest = (offset) => {
+		this.onCharListLoading();
+		this.marvelService.getAllCharacters(9, offset)
 			.then(this.onCharListLoaded)
 			.catch(this.onError)
 	}
-	onCharListLoaded = (listOfChars) => {
-		this.setState({
-			listOfChars: listOfChars,
+	onCharListLoaded = (newListOfChars) => {
+		let ended = false;
+		if (newListOfChars.length < 9){
+			ended = true;
+		}
+		this.setState(({listOfChars, offset}) => ({
+			listOfChars: [...listOfChars, ...newListOfChars],
 			loading: false,
-			error: false
-		})
+			error: false,
+			newItemLoading: false,
+			offset: offset + 9,
+			charEnded: ended
+		}))
 	}
 	onError = () => {
 		this.setState({
@@ -63,7 +83,7 @@ class CharList extends Component {
 	}
 
 	render() {
-		const { listOfChars, error, loading } = this.state
+		const { listOfChars, error, loading, offset, newItemLoading, charEnded } = this.state
 		const list = this.renderList(listOfChars);
 		const errorMessage = error ? <ErrorMessage /> : null;
 		const spinner = loading ? <Spinner /> : null;
@@ -73,44 +93,10 @@ class CharList extends Component {
 				{errorMessage}
 				{spinner}
 				{items}
-				{/* <li className="char__item">
-						<img src={abyss} alt="abyss" />
-						<div className="char__name">Abyss</div>
-					</li>
-					<li className="char__item char__item_selected">
-						<img src={abyss} alt="abyss" />
-						<div className="char__name">Abyss</div>
-					</li>
-					<li className="char__item">
-						<img src={abyss} alt="abyss" />
-						<div className="char__name">Abyss</div>
-					</li>
-					<li className="char__item">
-						<img src={abyss} alt="abyss" />
-						<div className="char__name">Abyss</div>
-					</li>
-					<li className="char__item">
-						<img src={abyss} alt="abyss" />
-						<div className="char__name">Abyss</div>
-					</li>
-					<li className="char__item">
-						<img src={abyss} alt="abyss" />
-						<div className="char__name">Abyss</div>
-					</li>
-					<li className="char__item">
-						<img src={abyss} alt="abyss" />
-						<div className="char__name">Abyss</div>
-					</li>
-					<li className="char__item">
-						<img src={abyss} alt="abyss" />
-						<div className="char__name">Abyss</div>
-					</li>
-					<li className="char__item">
-						<img src={abyss} alt="abyss" />
-						<div className="char__name">Abyss</div>
-					</li> */}
-
-				<button className="button button__main button__long">
+				<button className="button button__main button__long"
+				style={{'display': charEnded ? 'none' : 'block'}}
+				disabled={newItemLoading}
+				onClick={() => this.onRequest(offset)}>
 					<div className="inner">load more</div>
 				</button>
 			</div>
