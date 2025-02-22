@@ -18,6 +18,25 @@ class CharList extends Component {
 		offset: 1500,
 		charEnded: false
 	}
+
+	focusRef = [];
+
+	focusOnItem = (id) => {
+		this.focusRef.forEach(ref => ref.classList.remove('char__item_selected'));
+		this.focusRef[id].classList.add('char__item_selected');
+		this.focusRef[id].focus();
+	}
+
+	setRef = (ref) => {
+		this.focusRef.push(ref);
+	}
+	onKeyPress = (e, id, i) => {
+		if (e.key === "Enter" || e.key === " "){
+			this.props.onCharSelected(id);
+			this.focusOnItem(i);
+		}
+	}
+
 	componentDidMount() {
 		this.onRequest();
 	}
@@ -63,12 +82,18 @@ class CharList extends Component {
 	}
 
 	renderList = (listOfChars) => {
-		const items = listOfChars.map(({ thumbnail, name, id }) => {
+		const items = listOfChars.map(({ thumbnail, name, id }, i) => {
 			const img = this.checkImage(thumbnail, name);
 			return (
 				<li key={id} 
 				className="char__item"
-				onClick={() => this.props.onCharSelected(id)}>
+				tabIndex="0"
+				ref={this.setRef}
+				onClick={() => {
+					this.props.onCharSelected(id);
+					this.focusOnItem(i);
+					}}
+				onKeyDown={(e) => this.onKeyPress(e, id, i)}>
 					{/* <img src={thumbnail} alt={name} /> */}
 					{img}
 					<div className="char__name">{name}</div>
