@@ -30,8 +30,8 @@ const CharList = (props) => {
 
 	const onKeyPress = (e, id, i) => {
 		if (e.key === "Enter" || e.key === " ") {
-			this.props.onCharSelected(id);
-			this.focusOnItem(i);
+			props.onCharSelected(id);
+			focusOnItem(i);
 		}
 	}
 
