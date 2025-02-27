@@ -1,78 +1,68 @@
 import './charList.scss';
 
 import PropTypes from 'prop-types';
-import { Component } from 'react';
+import { Component, useState, useRef, useEffect } from 'react';
 import MarvelService from '../../services/MarvelService';
 import Spinner from "../spinner/Spinner";
 import ErrorMessage from '../errorMessage/ErrorMessage';
 
-class CharList extends Component {
+const CharList = (props) => {
+	const [listOfChars, setCharList] = useState([]);
+	const [error, setError] = useState(false);
+	const [loading, setLoading] = useState(true);
+	const [newItemLoading, setNewItemLoading] = useState(false);
+	const [offset, setOffset] = useState(10);
+	const [charEnded, setCharEnded] = useState(false);
 
-	marvelService = new MarvelService("ca6ebcdf506dab97c2c0256b367848c4", "f0655c29263c9aa0b053af7c9598228819172c1b");
+	const marvelService = new MarvelService();
 
-	state = {
-		listOfChars: [],
-		error: false,
-		loading: true,
-		newItemLoading: false,
-		offset: 1500,
-		charEnded: false
+	const focusRef = useRef([]);
+
+	useEffect(() => {
+		onRequest();
+	}, [])
+
+	const focusOnItem = (id) => {
+		focusRef.current.forEach(ref => ref.classList.remove('char__item_selected'));
+		focusRef.current[id].classList.add('char__item_selected');
+		focusRef.current[id].focus();
 	}
 
-	focusRef = [];
-
-	focusOnItem = (id) => {
-		this.focusRef.forEach(ref => ref.classList.remove('char__item_selected'));
-		this.focusRef[id].classList.add('char__item_selected');
-		this.focusRef[id].focus();
-	}
-
-	setRef = (ref) => {
-		this.focusRef.push(ref);
-	}
-	onKeyPress = (e, id, i) => {
-		if (e.key === "Enter" || e.key === " "){
+	const onKeyPress = (e, id, i) => {
+		if (e.key === "Enter" || e.key === " ") {
 			this.props.onCharSelected(id);
 			this.focusOnItem(i);
 		}
 	}
 
-	componentDidMount() {
-		this.onRequest();
-	}
 
-	onCharListLoading = () => {
-		this.setState({
-			newItemLoading: true
-		})
+	const onCharListLoading = () => {
+		setNewItemLoading(true);
 	}
-	onRequest = (offset) => {
-		this.onCharListLoading();
-		this.marvelService.getAllCharacters(9, offset)
-			.then(this.onCharListLoaded)
-			.catch(this.onError)
+	const onRequest = (offset) => {
+		onCharListLoading();
+		marvelService.getAllCharacters(9, offset)
+			.then(onCharListLoaded)
+			.catch(onError)
 	}
-	onCharListLoaded = (newListOfChars) => {
+	const onCharListLoaded = (newListOfChars) => {
 		let ended = false;
-		if (newListOfChars.length < 9){
+		if (newListOfChars.length < 9) {
 			ended = true;
 		}
-		this.setState(({listOfChars, offset}) => ({
-			listOfChars: [...listOfChars, ...newListOfChars],
-			loading: false,
-			error: false,
-			newItemLoading: false,
-			offset: offset + 9,
-			charEnded: ended
-		}))
+
+		setCharList(() => [...listOfChars, ...newListOfChars]);
+		setLoading(() => false);
+		setError(() => false);
+		setNewItemLoading(() => false);
+		setOffset(offset => offset + 9);
+		setCharEnded(() => ended)
 	}
-	onError = () => {
-		this.setState({
-			error: true,
-			loading: false
-		})
+	const onError = () => {
+		setError(true);
+		setLoading(false);
 	}
-	checkImage = (thumbnail, name) => {
+	const checkImage = (thumbnail, name) => {
 		if (thumbnail.includes("image_not_available")) {
 			return (<img src={thumbnail} alt={name} className="randomchar__img"
 				style={{ objectFit: "contain" }} />);
@@ -81,19 +71,19 @@ class CharList extends Component {
 		}
 	}
 
-	renderList = (listOfChars) => {
+	function renderList(listOfChars) {
 		const items = listOfChars.map(({ thumbnail, name, id }, i) => {
-			const img = this.checkImage(thumbnail, name);
+			const img = checkImage(thumbnail, name);
 			return (
-				<li key={id} 
-				className="char__item"
-				tabIndex="0"
-				ref={this.setRef}
-				onClick={() => {
-					this.props.onCharSelected(id);
-					this.focusOnItem(i);
+				<li key={id}
+					className="char__item"
+					tabIndex="0"
+					ref={elem => focusRef.current[i] = elem}
+					onClick={() => {
+						props.onCharSelected(id);
+						focusOnItem(i);
 					}}
-				onKeyDown={(e) => this.onKeyPress(e, id, i)}>
+					onKeyDown={(e) => onKeyPress(e, id, i)}>
 					{/* <img src={thumbnail} alt={name} /> */}
 					{img}
 					<div className="char__name">{name}</div>
@@ -108,27 +98,160 @@ class CharList extends Component {
 		);
 	}
 
-	render() {
-		const { listOfChars, error, loading, offset, newItemLoading, charEnded } = this.state
-		const list = this.renderList(listOfChars);
-		const errorMessage = error ? <ErrorMessage /> : null;
-		const spinner = loading ? <Spinner /> : null;
-		const items = !(loading || error) ? list : null;
-		return (
-			<div className="char__list">
-				{errorMessage}
-				{spinner}
-				{items}
-				<button className="button button__main button__long"
-				style={{'display': charEnded ? 'none' : 'block'}}
+	// const { listOfChars, error, loading, offset, newItemLoading, charEnded } = this.state
+	const list = renderList(listOfChars);
+	const errorMessage = error ? <ErrorMessage /> : null;
+	const spinner = loading ? <Spinner /> : null;
+	const items = !(loading || error) ? list : null;
+	return (
+		<div className="char__list">
+			{errorMessage}
+			{spinner}
+			{items}
+			<button className="button button__main button__long"
+				style={{ 'display': charEnded ? 'none' : 'block' }}
 				disabled={newItemLoading}
-				onClick={() => this.onRequest(offset)}>
-					<div className="inner">load more</div>
-				</button>
-			</div>
-		)
-	}
+				onClick={() => onRequest(offset)}>
+				<div className="inner">load more</div>
+			</button>
+		</div>
+	)
 }
+
+CharList.propTypes = {
+	onCharSelected: PropTypes.func.isRequired
+}
+
+
+
+// class CharList extends Component {
+
+// 	marvelService = new MarvelService("ca6ebcdf506dab97c2c0256b367848c4", "f0655c29263c9aa0b053af7c9598228819172c1b");
+
+// 	state = {
+// 		listOfChars: [],
+// 		error: false,
+// 		loading: true,
+// 		newItemLoading: false,
+// 		offset: 1500,
+// 		charEnded: false
+// 	}
+
+// 	focusRef = [];
+// 	componentDidUpdate(){
+// 		console.log("Update! ", this.focusRef.length);
+// 	}
+
+// 	focusOnItem = (id) => {
+// 		this.focusRef.forEach(ref => ref.classList.remove('char__item_selected'));
+// 		this.focusRef[id].classList.add('char__item_selected');
+// 		this.focusRef[id].focus();
+// 	}
+
+// 	setRef = (ref) => {
+// 		this.focusRef.push(ref);
+// 	}
+// 	onKeyPress = (e, id, i) => {
+// 		if (e.key === "Enter" || e.key === " "){
+// 			this.props.onCharSelected(id);
+// 			this.focusOnItem(i);
+// 		}
+// 	}
+
+// 	componentDidMount() {
+// 		this.onRequest();
+// 	}
+
+// 	onCharListLoading = () => {
+// 		this.setState({
+// 			newItemLoading: true
+// 		})
+// 	}
+// 	onRequest = (offset) => {
+// 		this.onCharListLoading();
+// 		this.marvelService.getAllCharacters(9, offset)
+// 			.then(this.onCharListLoaded)
+// 			.catch(this.onError)
+// 	}
+// 	onCharListLoaded = (newListOfChars) => {
+// 		let ended = false;
+// 		if (newListOfChars.length < 9){
+// 			ended = true;
+// 		}
+// 		this.setState(({listOfChars, offset}) => ({
+// 			listOfChars: [...listOfChars, ...newListOfChars],
+// 			loading: false,
+// 			error: false,
+// 			newItemLoading: false,
+// 			offset: offset + 9,
+// 			charEnded: ended
+// 		}))
+// 	}
+// 	onError = () => {
+// 		this.setState({
+// 			error: true,
+// 			loading: false
+// 		})
+// 	}
+// 	checkImage = (thumbnail, name) => {
+// 		if (thumbnail.includes("image_not_available")) {
+// 			return (<img src={thumbnail} alt={name} className="randomchar__img"
+// 				style={{ objectFit: "contain" }} />);
+// 		} else {
+// 			return <img src={thumbnail} alt={name} className="randomchar__img" />
+// 		}
+// 	}
+
+// 	renderList = (listOfChars) => {
+// 		console.log('Before:', this.focusRef.length);
+// 		const items = listOfChars.map(({ thumbnail, name, id }, i) => {
+// 			const img = this.checkImage(thumbnail, name);
+// 			return (
+// 				<li key={id} 
+// 				className="char__item"
+// 				tabIndex="0"
+// 				ref={this.setRef}
+// 				onClick={() => {
+// 					this.props.onCharSelected(id);
+// 					this.focusOnItem(i);
+// 					}}
+// 				onKeyDown={(e) => this.onKeyPress(e, id, i)}>
+// 					{/* <img src={thumbnail} alt={name} /> */}
+// 					{img}
+// 					<div className="char__name">{name}</div>
+// 				</li>
+// 			);
+// 		});
+// 		console.log('After:', this.focusRef.length);
+// 		return (
+// 			<ul className="char__grid">
+// 				{items}
+// 			</ul>
+// 		);
+// 	}
+
+// 	render() {
+// 		console.log(this.focusRef);
+// 		const { listOfChars, error, loading, offset, newItemLoading, charEnded } = this.state
+// 		const list = this.renderList(listOfChars);
+// 		const errorMessage = error ? <ErrorMessage /> : null;
+// 		const spinner = loading ? <Spinner /> : null;
+// 		const items = !(loading || error) ? list : null;
+// 		return (
+// 			<div className="char__list">
+// 				{errorMessage}
+// 				{spinner}
+// 				{items}
+// 				<button className="button button__main button__long"
+// 				style={{'display': charEnded ? 'none' : 'block'}}
+// 				disabled={newItemLoading}
+// 				onClick={() => this.onRequest(offset)}>
+// 					<div className="inner">load more</div>
+// 				</button>
+// 			</div>
+// 		)
+// 	}
+// }
 
 CharList.propTypes = {
 	onCharSelected: PropTypes.func.isRequired

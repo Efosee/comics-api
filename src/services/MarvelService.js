@@ -1,11 +1,15 @@
 import md5 from "md5";
 
 class MarvelService {
-	constructor(publicKey, privateKey) {
-		this.publicKey = publicKey;
-		this.privateKey = privateKey;
-	}
 	_baseUrl = "https://gateway.marvel.com/v1/public/";
+	_PUBLICKEY = "ca6ebcdf506dab97c2c0256b367848c4";
+	_PRIVATEKEY = "f0655c29263c9aa0b053af7c9598228819172c1b";
+
+	constructor(publicKey, privateKey) {
+		this.publicKey = this._PUBLICKEY;
+		this.privateKey = this._PRIVATEKEY;
+	}
+
 	createAPIUrl() {
 		const ts = Date.now();
 		const hash = md5(ts + this.privateKey + this.publicKey);
@@ -23,7 +27,7 @@ class MarvelService {
 
 		} catch (error) {
 			console.error(error);
-			
+
 		}
 
 	}
@@ -55,11 +59,11 @@ class MarvelService {
 	}
 
 	_transformCharacter = (char) => {
-		const {name, description, thumbnail, urls, id, comics} = char;
+		const { name, description, thumbnail, urls, id, comics } = char;
 		return {
 			id: id,
 			name: name,
-			description: description ? `${description.slice(0,210)}...`: "There is no description for this character",
+			description: description ? `${description.slice(0, 210)}...` : "There is no description for this character",
 			thumbnail: thumbnail.path + '.' + thumbnail.extension,
 			homepage: urls[0].url,
 			wiki: urls[1].url,
