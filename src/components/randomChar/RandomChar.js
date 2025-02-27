@@ -1,86 +1,83 @@
-import { Component } from 'react';
+import { Component, useEffect, useState } from 'react';
 import './randomChar.scss';
 import Spinner from "../spinner/Spinner";
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import mjolnir from '../../resources/img/mjolnir.png';
 import MarvelService from '../../services/MarvelService';
 
-class RandomChar extends Component {
-	componentDidMount(){
-		this.updateChar();
-	}
-	state = {
-		char: {},
-		loading: true,
-		error: false
+const RandomChar = () => {
+	useEffect(() => {
+		updateChar();
+	});
+
+	const [char, setChar] = useState({});
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState(false);
+
+
+	const marvelService = new MarvelService();
+
+	const onCharLoaded = (char) => {
+		setChar(char);
+		setLoading(false);
 	}
 
-	marvelService = new MarvelService("ca6ebcdf506dab97c2c0256b367848c4", "f0655c29263c9aa0b053af7c9598228819172c1b");
-
-	onCharLoaded = (char) => {
-		this.setState({ char: char, loading: false });
+	const onError = () => {
+		setLoading(false);
+		setError(true);
 	}
-
-	onError = () => {
-		this.setState({
-			loading: false,
-			error: true
-		})
-
-	}
-	updateChar = () => {
+	const updateChar = () => {
 		const max = 1011400,
 			min = 1011000;
 		const id = Math.floor(Math.random() * (max - min + 1) + min)
-		this.marvelService
+		marvelService
 			.getCharacter(id)
-			.then(this.onCharLoaded)
-			.catch(this.onError)
+			.then(onCharLoaded)
+			.catch(onError)
 	}
-	
-	onUpdateChar = () => {
-		this.setState({loading: true, error: false});
-		this.updateChar();
+
+	const onUpdateChar = () => {
+		setLoading(true);
+		setError(false);
+		updateChar();
 	}
-	render() {
-		const { char, loading, error } = this.state;
-		const errorMessage = error ? <ErrorMessage/> : null;
-		const spinner = loading ? <Spinner/> : null;
-		const content = !(loading || error) ? <View char={char}/> : null
-		return (
-			<div className="randomchar">
-				{/* {loading ? <Spinner /> : error ? <ErrorMessage/> : <View char={char} />} */}
-				{errorMessage}
-				{spinner}
-				{content}
-				<div className="randomchar__static">
-					<p className="randomchar__title">
-						Random character for today!<br />
-						Do you want to get to know him better?
-					</p>
-					<p className="randomchar__title">
-						Or choose another one
-					</p>
-					<button onClick={this.onUpdateChar} className="button button__main">
-						<div className="inner">try it</div>
-					</button>
-					<img src={mjolnir} alt="mjolnir" className="randomchar__decoration" />
-				</div>
+	// const { char, loading, error } = this.state;
+	const errorMessage = error ? <ErrorMessage /> : null;
+	const spinner = loading ? <Spinner /> : null;
+	const content = !(loading || error) ? <View char={char} /> : null
+	return (
+		<div className="randomchar">
+			{/* {loading ? <Spinner /> : error ? <ErrorMessage/> : <View char={char} />} */}
+			{errorMessage}
+			{spinner}
+			{content}
+			<div className="randomchar__static">
+				<p className="randomchar__title">
+					Random character for today!<br />
+					Do you want to get to know him better?
+				</p>
+				<p className="randomchar__title">
+					Or choose another one
+				</p>
+				<button onClick={onUpdateChar} className="button button__main">
+					<div className="inner">try it</div>
+				</button>
+				<img src={mjolnir} alt="mjolnir" className="randomchar__decoration" />
 			</div>
-		)
-	}
+		</div>
+	)
 }
 
 const View = ({ char }) => {
 	const { name, description, thumbnail, homepage, wiki } = char;
-	
+
 
 	const checkImage = (thumbnail) => {
-		if (thumbnail.includes("image_not_available")){
-			return (<img src={thumbnail} alt="Random character" className="randomchar__img" 
-			style={{objectFit: "contain"}}/>);
+		if (thumbnail.includes("image_not_available")) {
+			return (<img src={thumbnail} alt="Random character" className="randomchar__img"
+				style={{ objectFit: "contain" }} />);
 		} else {
-			return <img src={thumbnail} alt="Random character" className="randomchar__img"/>
+			return <img src={thumbnail} alt="Random character" className="randomchar__img" />
 		}
 	}
 
