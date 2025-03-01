@@ -1,4 +1,4 @@
-import { Component, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import './charInfo.scss';
 import MarvelService from '../../services/MarvelService';
 
