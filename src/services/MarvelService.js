@@ -2,10 +2,12 @@ import md5 from "md5";
 import {useHttp} from '../hooks/http.hook';
 
 const useMarvelService = () => {
-	const {loading, request, error} = useHttp();
+	const {loading, request, error, clearError} = useHttp();
 	const _baseUrl = "https://gateway.marvel.com/v1/public/";
-	const _PUBLICKEY = "ca6ebcdf506dab97c2c0256b367848c4";
-	const _PRIVATEKEY = "f0655c29263c9aa0b053af7c9598228819172c1b";
+	// const _PUBLICKEY = "ca6ebcdf506dab97c2c0256b367848c4";
+	// const _PRIVATEKEY = "f0655c29263c9aa0b053af7c9598228819172c1b";
+	const _PUBLICKEY = "8aaef968ece015393ca247685ea7cf69";
+	const _PRIVATEKEY = "0f7f1f2a4be2aed0b8d95bf659a1ef5ce08d7e86";
 
 
 	function createAPIUrl() {
@@ -53,7 +55,6 @@ const useMarvelService = () => {
 		const apiResource = "characters";
 		const res = await getApiResource(id, apiResource);
 		return _transformCharacter(res.data.results[0]);
-
 	}
 
 	const _transformCharacter = (char) => {
@@ -69,6 +70,26 @@ const useMarvelService = () => {
 		}
 	}
 
-	return {getCharacter, getAllCharacters, loading, error}
+	//Comics
+
+	const getAllComics = async (limit, offset) => {
+		const apiResource = "comics";
+		const res = await getApiAllResources(limit, offset, apiResource);
+		return res.data.results.map(_transformComics);
+	}
+
+	const _transformComics = (comics) => {
+		const { title, description, thumbnail, urls, id, prices } = comics;
+		return {
+			id: id,
+			title: title,
+			description: description ? `${description.slice(0, 210)}...` : "There is no description for this character",
+			thumbnail: thumbnail.path + '.' + thumbnail.extension,
+			detail: urls[0].url,
+			price: prices[0].price !== 0 ? prices[0].price + '$' : "NOT AVAILABLE"
+		}
+	}
+
+	return {getCharacter, getAllCharacters, loading, error, clearError, getAllComics}
 }
 export default useMarvelService;

@@ -12,13 +12,14 @@ const RandomChar = () => {
 	}, []);
 
 	const [char, setChar] = useState({});
-	const {loading, error, getCharacter} = useMarvelService();
+	const {loading, error, getCharacter, clearError} = useMarvelService();
 
 	const onCharLoaded = (char) => {
 		setChar(char);
 	}
 
 	const updateChar = () => {
+		clearError();
 		const max = 1011400,
 			min = 1011000;
 		const id = Math.floor(Math.random() * (max - min + 1) + min)

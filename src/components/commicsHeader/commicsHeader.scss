@@ -1,0 +1,21 @@
+.commics-header {
+	background-color: #232222;
+	padding: 0 25px 0 45px;
+	margin-bottom: 45px;
+
+	&__title {
+		font-size: 24px;
+		font-weight: bold;
+		color: #ffffff;
+		margin-left: 83px;
+
+	}
+
+	display: grid;
+	grid-template-columns: auto repeat(2, 1fr);
+	align-items: center;
+}
+
+.avengers-logo {
+	justify-self: right;
+}
