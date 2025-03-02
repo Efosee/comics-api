@@ -1,21 +1,15 @@
 import { useState, useEffect } from 'react';
 import './charInfo.scss';
-import MarvelService from '../../services/MarvelService';
+import useMarvelService from '../../services/MarvelService';
 
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import Skeleton from '../skeleton/Skeleton';
 
 const CharInfo = (props) => {
-	state = {
-		char: null,
-		loading: false,
-		error: false
-	}
 
 	const [char, setChar] = useState(null);
-	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState(false);
+	const { loading, error, getCharacter } = useMarvelService();
 
 	useEffect(() => {
 		updateChar()
@@ -25,35 +19,20 @@ const CharInfo = (props) => {
 		updateChar()
 	}, [props.charId])
 
-	const marvelService = new MarvelService();
 
 	const updateChar = () => {
-		const { charId } = this.props;
+		const { charId } = props;
 		if (!charId) {
 			return
 		}
-
-		onCharLoading();
-
-		marvelService
-			.getCharacter(charId)
-			.then(onCharLoaded)
-			.catch(onError);
+		getCharacter(charId)
+			.then(onCharLoaded);
 	}
 
 	const onCharLoaded = (char) => {
 		setChar(char);
-		setLoading(false);
 	}
 
-	const onCharLoading = () => {
-		setLoading(true);
-		setError(false);
-	}
-	const onError = () => {
-		setLoading(false);
-		setError(true);
-	}
 
 	// const { char, loading, error } = this.state;
 	const skeleton = char || loading || error ? null : <Skeleton />;
@@ -113,36 +92,6 @@ const View = ({ char }) => {
 						</li>
 					)
 				}).slice(0, 10)}
-				{/* <li className="char__comics-item">
-					All-Winners Squad: Band of Heroes (2011) #3
-				</li>
-				<li className="char__comics-item">
-					Alpha Flight (1983) #50
-				</li>
-				<li className="char__comics-item">
-					Amazing Spider-Man (1999) #503
-				</li>
-				<li className="char__comics-item">
-					Amazing Spider-Man (1999) #504
-				</li>
-				<li className="char__comics-item">
-					AMAZING SPIDER-MAN VOL. 7: BOOK OF EZEKIEL TPB (Trade Paperback)
-				</li>
-				<li className="char__comics-item">
-					Amazing-Spider-Man: Worldwide Vol. 8 (Trade Paperback)
-				</li>
-				<li className="char__comics-item">
-					Asgardians Of The Galaxy Vol. 2: War Of The Realms (Trade Paperback)
-				</li>
-				<li className="char__comics-item">
-					Vengeance (2011) #4
-				</li>
-				<li className="char__comics-item">
-					Avengers (1963) #1
-				</li>
-				<li className="char__comics-item">
-					Avengers (1996) #1
-				</li> */}
 			</ul>
 		</>
 	);

@@ -1,5 +1,4 @@
 import { useState, useCallback } from "react";
-import { Exception } from "sass";
 
 export const useHttp = () => {
 	const [error, setError] = useState(null);

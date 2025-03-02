@@ -2,24 +2,21 @@ import './charList.scss';
 
 import PropTypes from 'prop-types';
 import { useState, useRef, useEffect } from 'react';
-import MarvelService from '../../services/MarvelService';
+import useMarvelService from '../../services/MarvelService';
 import Spinner from "../spinner/Spinner";
 import ErrorMessage from '../errorMessage/ErrorMessage';
 
 const CharList = (props) => {
 	const [listOfChars, setCharList] = useState([]);
-	const [error, setError] = useState(false);
-	const [loading, setLoading] = useState(true);
 	const [newItemLoading, setNewItemLoading] = useState(false);
-	const [offset, setOffset] = useState(10);
+	const [offset, setOffset] = useState(0);
 	const [charEnded, setCharEnded] = useState(false);
-
-	const marvelService = new MarvelService();
+	const {error, loading, getAllCharacters} = useMarvelService();
 
 	const focusRef = useRef([]);
 
 	useEffect(() => {
-		onRequest();
+		onRequest(offset, true);
 	}, [])
 
 	const focusOnItem = (id) => {
@@ -35,15 +32,10 @@ const CharList = (props) => {
 		}
 	}
 
-
-	const onCharListLoading = () => {
-		setNewItemLoading(true);
-	}
-	const onRequest = (offset) => {
-		onCharListLoading();
-		marvelService.getAllCharacters(9, offset)
+	const onRequest = (offset, initial) => {
+		initial ? setNewItemLoading(false) : setNewItemLoading(true);
+		getAllCharacters(9, offset)
 			.then(onCharListLoaded)
-			.catch(onError)
 	}
 	const onCharListLoaded = (newListOfChars) => {
 		let ended = false;
@@ -52,16 +44,11 @@ const CharList = (props) => {
 		}
 
 		setCharList(() => [...listOfChars, ...newListOfChars]);
-		setLoading(() => false);
-		setError(() => false);
 		setNewItemLoading(() => false);
 		setOffset(offset => offset + 9);
 		setCharEnded(() => ended)
 	}
-	const onError = () => {
-		setError(true);
-		setLoading(false);
-	}
+
 	const checkImage = (thumbnail, name) => {
 		if (thumbnail.includes("image_not_available")) {
 			return (<img src={thumbnail} alt={name} className="randomchar__img"
@@ -101,13 +88,12 @@ const CharList = (props) => {
 	// const { listOfChars, error, loading, offset, newItemLoading, charEnded } = this.state
 	const list = renderList(listOfChars);
 	const errorMessage = error ? <ErrorMessage /> : null;
-	const spinner = loading ? <Spinner /> : null;
-	const items = !(loading || error) ? list : null;
+	const spinner = loading && !newItemLoading ? <Spinner /> : null;
 	return (
 		<div className="char__list">
 			{errorMessage}
 			{spinner}
-			{items}
+			{list}
 			<button className="button button__main button__long"
 				style={{ 'display': charEnded ? 'none' : 'block' }}
 				disabled={newItemLoading}

@@ -1,65 +1,62 @@
 import md5 from "md5";
+import {useHttp} from '../hooks/http.hook';
+
+const useMarvelService = () => {
+	const {loading, request, error} = useHttp();
+	const _baseUrl = "https://gateway.marvel.com/v1/public/";
+	const _PUBLICKEY = "ca6ebcdf506dab97c2c0256b367848c4";
+	const _PRIVATEKEY = "f0655c29263c9aa0b053af7c9598228819172c1b";
 
 
-class MarvelService {
-	_baseUrl = "https://gateway.marvel.com/v1/public/";
-	_PUBLICKEY = "ca6ebcdf506dab97c2c0256b367848c4";
-	_PRIVATEKEY = "f0655c29263c9aa0b053af7c9598228819172c1b";
-
-	constructor(publicKey, privateKey) {
-		this.publicKey = this._PUBLICKEY;
-		this.privateKey = this._PRIVATEKEY;
-	}
-
-	createAPIUrl() {
+	function createAPIUrl() {
 		const ts = Date.now();
-		const hash = md5(ts + this.privateKey + this.publicKey);
-		return `ts=${ts}&apikey=${this.publicKey}&hash=${hash}`;
+		const hash = md5(ts + _PRIVATEKEY + _PUBLICKEY);
+		return `ts=${ts}&apikey=${_PUBLICKEY}&hash=${hash}`;
 	}
-	getResources = async (url) => {
-		try {
-			const res = await fetch(url);
+	// getResources = async (url) => {
+	// 	try {
+	// 		const res = await fetch(url);
 
-			if (!res.ok) {
-				throw new Error(`Could not fetch ${url}, status: ${res.status}`);
-			}
+	// 		if (!res.ok) {
+	// 			throw new Error(`Could not fetch ${url}, status: ${res.status}`);
+	// 		}
 
-			return await res.json();
+	// 		return await res.json();
 
-		} catch (error) {
-			console.error(error);
+	// 	} catch (error) {
+	// 		console.error(error);
 
-		}
+	// 	}
 
-	}
+	// }
 
-	getApiAllResources = (limit, offset, res = "characters") => {
+	const getApiAllResources = (limit, offset, res = "characters") => {
 
 		limit = limit ? `limit=${limit}&` : "";
 		offset = offset ? `offset=${offset}&` : "";
 
-		const url = this._baseUrl + `${res}?${limit}${offset}` + this.createAPIUrl()
-		return this.getResources(url);
+		const url = _baseUrl + `${res}?${limit}${offset}` + createAPIUrl()
+		return request(url);
 	}
 
-	getApiResource = (id, res = "characters") => {
-		const url = this._baseUrl + `${res}/${id}?` + this.createAPIUrl()
-		return this.getResources(url);
+	const getApiResource = (id, res = "characters") => {
+		const url = _baseUrl + `${res}/${id}?` + createAPIUrl()
+		return request(url);
 	}
 
-	getAllCharacters = async (limit, offset) => {
+	const getAllCharacters = async (limit, offset) => {
 		const apiResource = "characters";
-		const res = await this.getApiAllResources(limit, offset, apiResource);
-		return res.data.results.map(this._transformCharacter);
+		const res = await getApiAllResources(limit, offset, apiResource);
+		return res.data.results.map(_transformCharacter);
 	}
-	getCharacter = async (id) => {
+	const getCharacter = async (id) => {
 		const apiResource = "characters";
-		const res = await this.getApiResource(id, apiResource);
-		return this._transformCharacter(res.data.results[0]);
+		const res = await getApiResource(id, apiResource);
+		return _transformCharacter(res.data.results[0]);
 
 	}
 
-	_transformCharacter = (char) => {
+	const _transformCharacter = (char) => {
 		const { name, description, thumbnail, urls, id, comics } = char;
 		return {
 			id: id,
@@ -72,5 +69,6 @@ class MarvelService {
 		}
 	}
 
+	return {getCharacter, getAllCharacters, loading, error}
 }
-export default MarvelService
+export default useMarvelService;

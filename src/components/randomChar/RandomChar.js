@@ -3,42 +3,30 @@ import './randomChar.scss';
 import Spinner from "../spinner/Spinner";
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import mjolnir from '../../resources/img/mjolnir.png';
-import MarvelService from '../../services/MarvelService';
+import useMarvelService from '../../services/MarvelService';
 
 const RandomChar = () => {
+
 	useEffect(() => {
 		updateChar();
-	});
+	}, []);
 
 	const [char, setChar] = useState({});
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState(false);
-
-
-	const marvelService = new MarvelService();
+	const {loading, error, getCharacter} = useMarvelService();
 
 	const onCharLoaded = (char) => {
 		setChar(char);
-		setLoading(false);
 	}
 
-	const onError = () => {
-		setLoading(false);
-		setError(true);
-	}
 	const updateChar = () => {
 		const max = 1011400,
 			min = 1011000;
 		const id = Math.floor(Math.random() * (max - min + 1) + min)
-		marvelService
-			.getCharacter(id)
-			.then(onCharLoaded)
-			.catch(onError)
+			getCharacter(id)
+			.then(onCharLoaded);
 	}
 
 	const onUpdateChar = () => {
-		setLoading(true);
-		setError(false);
 		updateChar();
 	}
 	// const { char, loading, error } = this.state;
@@ -73,7 +61,7 @@ const View = ({ char }) => {
 
 
 	const checkImage = (thumbnail) => {
-		if (thumbnail.includes("image_not_available")) {
+		if (thumbnail && thumbnail.includes("image_not_available")) {
 			return (<img src={thumbnail} alt="Random character" className="randomchar__img"
 				style={{ objectFit: "contain" }} />);
 		} else {
