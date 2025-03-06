@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 import AppHeader from "../appHeader/AppHeader";
-import { MainPage, ComicsPage } from "../pages";
+import { MainPage, ComicsPage, Page404 } from "../pages";
 
 
 const App = () => {
@@ -17,6 +17,9 @@ const App = () => {
 						</Route>
 						<Route path="/comics">
 							<ComicsPage />
+						</Route>
+						<Route path="*">
+							<Page404 />
 						</Route>
 					</Switch>
 				</main>
