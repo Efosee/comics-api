@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
+
 import useMarvelService from '../../services/MarvelService';
 import './commicList.scss';
 import Spinner from "../spinner/Spinner";
@@ -67,11 +69,12 @@ function ComicsList() {
 						focusOnItem(i);
 					}}
 					onKeyDown={(e) => onKeyPress(e, id, i)}>
-					<div className="wrapper" ref={elem => focusRef.current[i] = elem}>
+					<Link to={`/comics/${id}`}
+					className="wrapper" ref={elem => focusRef.current[i] = elem}>
 						{img}
 						<div className="comics__title">{title}</div>
 						<div className="comics__price">{price}</div>
-					</div>
+					</Link>
 				</li>
 			);
 		});

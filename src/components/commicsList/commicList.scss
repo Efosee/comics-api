@@ -1,6 +1,10 @@
 @import '../../style/variables.scss';
 
 .comics {
+	.wrapper{
+		display: block;
+		text-decoration: none;
+	}
 	&__grid {
 		display: grid;
 		grid-template-columns: repeat(4, 1fr);

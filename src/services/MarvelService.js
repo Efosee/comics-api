@@ -78,6 +78,12 @@ const useMarvelService = () => {
 		return res.data.results.map(_transformComics);
 	}
 
+	const getComics = async (id) => {
+		const apiResource = "comics";
+		const res = await getApiResource(id, apiResource);
+		return _transformComics(res.data.results[0]);
+	}
+
 	const _transformComics = (comics) => {
 		const { title, description, thumbnail, urls, id, prices } = comics;
 		return {
