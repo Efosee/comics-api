@@ -1,7 +1,7 @@
 import CommicsHeader from "../commicsHeader/commicsHeader";
 import ComicsList from "../commicsList/comicList";
 
-export const ComicsPage = () => {
+const ComicsPage = () => {
 
 	return (
 		<>
@@ -10,3 +10,4 @@ export const ComicsPage = () => {
 		</>
 	);
 }
+export default ComicsPage;

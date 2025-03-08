@@ -85,6 +85,7 @@ const useMarvelService = () => {
 	}
 
 	const _transformComics = (comics) => {
+		console.log(comics)
 		const { title, description, thumbnail, urls, id, prices, pageCount } = comics;
 		return {
 			id: id,
@@ -94,7 +95,7 @@ const useMarvelService = () => {
 			detail: urls[0].url,
 			price: prices[0].price !== 0 ? prices[0].price + '$' : "NOT AVAILABLE",
 			pageCount: pageCount ? `${pageCount} p.` : "No information about it",
-			language: comics.textObject.language || 'en-us'
+			language: comics.textObject && comics.textObject.language || 'en-us'
 		}
 	}
 
