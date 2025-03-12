@@ -42,14 +42,14 @@ const RandomChar = () => {
 			{content}
 			<div className="randomchar__static">
 				<p className="randomchar__title">
-					Random character for today!<br />
-					Do you want to get to know him better?
+					Случайный персонаж на сегодня!<br />
+					Хочешь узнать о нем подробнее?
 				</p>
 				<p className="randomchar__title">
-					Or choose another one
+					Или выбрать другого
 				</p>
 				<button onClick={onUpdateChar} className="button button__main">
-					<div className="inner">try it</div>
+					<div className="inner">Попробуй</div>
 				</button>
 				<img src={mjolnir} alt="mjolnir" className="randomchar__decoration" />
 			</div>

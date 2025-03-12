@@ -98,7 +98,7 @@ function ComicsList() {
 				style={{ 'display': comicsEnded ? 'none' : 'block' }}
 				disabled={newItemLoading}
 				onClick={() => onRequest(offset)}>
-				<div className="inner">load more</div>
+				<div className="inner">Загрузить больше</div>
 			</button>
 		</div>
 	)

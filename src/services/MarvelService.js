@@ -62,7 +62,7 @@ const useMarvelService = () => {
 		return {
 			id: id,
 			name: name,
-			description: description ? `${description.slice(0, 210)}...` : "There is no description for this character",
+			description: description ? `${description.slice(0, 210)}...` : "Нет описания для персонажа",
 			thumbnail: thumbnail.path + '.' + thumbnail.extension,
 			homepage: urls[0].url,
 			wiki: urls[1].url,
@@ -90,12 +90,12 @@ const useMarvelService = () => {
 		return {
 			id: id,
 			title: title,
-			description: description ? `${description.slice(0, 210)}...` : "There is no description for this character",
+			description: description ? `${description.slice(0, 210)}...` : "У комикса нет описания",
 			thumbnail: thumbnail.path + '.' + thumbnail.extension,
 			detail: urls[0].url,
-			price: prices[0].price !== 0 ? prices[0].price + '$' : "NOT AVAILABLE",
-			pageCount: pageCount ? `${pageCount} p.` : "No information about it",
-			language: comics.textObject && comics.textObject.language || 'en-us'
+			price: prices[0].price !== 0 ? Math.floor(prices[0].price * 92) + 'руб.' : "Не доступен для продажи",
+			pageCount: pageCount ? `${pageCount} стр.` : "Количество страниц неизвестно",
+			language: comics.textObject && comics.textObject.language
 		}
 	}
 

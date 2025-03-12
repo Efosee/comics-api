@@ -6,14 +6,14 @@ const AppHeader = () => {
         <header className="app__header">
             <h1 className="app__title">
                 <Link to="/">
-                    <span>Marvel</span> information portal
+                    <span>Marvel</span> портал по комиксам
                 </Link>
             </h1>
             <nav className="app__menu">
                 <ul>
-                    <li><NavLink exact activeStyle={{'color': '#9f0013'}} to="/">Characters</NavLink></li>
+                    <li><NavLink exact activeStyle={{'color': '#9f0013'}} to="/">Персонажи</NavLink></li>
                     /
-                    <li><NavLink exact activeStyle={{'color': '#9f0013'}} to="/comics">Comics</NavLink></li>
+                    <li><NavLink activeStyle={{'color': '#9f0013'}} to="/comics">Комиксы</NavLink></li>
                 </ul>
             </nav>
         </header>
