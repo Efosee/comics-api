@@ -1,0 +1,32 @@
+{
+  "files": {
+    "main.css": "/comics-api/static/css/main.c994e10b.css",
+    "main.js": "/comics-api/static/js/main.52a7889a.js",
+    "static/js/825.9ac9dfd7.chunk.js": "/comics-api/static/js/825.9ac9dfd7.chunk.js",
+    "static/css/895.f5a329c1.chunk.css": "/comics-api/static/css/895.f5a329c1.chunk.css",
+    "static/js/895.bc586e22.chunk.js": "/comics-api/static/js/895.bc586e22.chunk.js",
+    "static/css/807.a1f45644.chunk.css": "/comics-api/static/css/807.a1f45644.chunk.css",
+    "static/js/807.63b445bc.chunk.js": "/comics-api/static/js/807.63b445bc.chunk.js",
+    "static/css/529.724f6d17.chunk.css": "/comics-api/static/css/529.724f6d17.chunk.css",
+    "static/js/529.f69d960b.chunk.js": "/comics-api/static/js/529.f69d960b.chunk.js",
+    "static/media/vision.png": "/comics-api/static/media/vision.067d4ae1936d64a577ce.png",
+    "static/media/mjolnir.png": "/comics-api/static/media/mjolnir.61f31e1809f12183a524.png",
+    "static/media/Avengers.png": "/comics-api/static/media/Avengers.4065c8f9c94e3d8b039a.png",
+    "static/media/error.gif": "/comics-api/static/media/error.42292aa12b6bc303ce99.gif",
+    "static/media/Avengers_logo.png": "/comics-api/static/media/Avengers_logo.9eaf219344d83362e830.png",
+    "index.html": "/comics-api/index.html",
+    "main.c994e10b.css.map": "/comics-api/static/css/main.c994e10b.css.map",
+    "main.52a7889a.js.map": "/comics-api/static/js/main.52a7889a.js.map",
+    "825.9ac9dfd7.chunk.js.map": "/comics-api/static/js/825.9ac9dfd7.chunk.js.map",
+    "895.f5a329c1.chunk.css.map": "/comics-api/static/css/895.f5a329c1.chunk.css.map",
+    "895.bc586e22.chunk.js.map": "/comics-api/static/js/895.bc586e22.chunk.js.map",
+    "807.a1f45644.chunk.css.map": "/comics-api/static/css/807.a1f45644.chunk.css.map",
+    "807.63b445bc.chunk.js.map": "/comics-api/static/js/807.63b445bc.chunk.js.map",
+    "529.724f6d17.chunk.css.map": "/comics-api/static/css/529.724f6d17.chunk.css.map",
+    "529.f69d960b.chunk.js.map": "/comics-api/static/js/529.f69d960b.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.c994e10b.css",
+    "static/js/main.52a7889a.js"
+  ]
+}
