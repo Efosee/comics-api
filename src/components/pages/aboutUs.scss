@@ -1,0 +1,25 @@
+.contacts{
+	font-size: 22px;
+
+	ul li{
+		margin-bottom: 10px;
+		color: #9F0013;
+		a{
+			color: black;
+			text-decoration: underline;
+		}
+		span{
+			color: black;
+		}
+	}
+	padding-bottom: 0;
+}
+.yandexmap{
+	iframe{
+		margin-top: 30px;
+	}
+	span{
+		font-size: 30px;
+		font-weight: bold;
+	}
+}
