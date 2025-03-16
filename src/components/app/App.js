@@ -15,7 +15,7 @@ const YandexMap = lazy(() => import('../pages/aboutUs'));
 const App = () => {
 
 	return (
-		<Router basename="/comics-api">
+		<Router basename="/Rus-Comics">
 			<div className="app">
 				<AppHeader />
 				<main>
