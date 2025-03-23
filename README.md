@@ -1,5 +1,5 @@
 # Project for my cousework
-https://efosee.github.io/marvel/
+https://efosee.github.io/comics-api/
 
 ## Getting Started with Create React App
 
